@@ -1,0 +1,120 @@
+﻿.gallery td {
+    padding: 5px;
+    width: 200px;
+    height: 200px;
+}
+
+body {
+    background-color:#11223c;
+}
+
+h4 {
+    text-align: center;
+    padding: 5px; 
+    width: 1100px;
+}
+
+.internalDiv {
+    width: 200px;
+    text-align: center;
+}
+
+ img {
+    width: 100px;
+    height: 100px;
+    margin: 5px;
+}
+
+#hello {
+    margin: 5px;
+    top:5px;
+    position:relative;
+    width:350px; 
+}   
+
+#imgInp{
+    width:200px;
+}
+.bottomButton
+{
+    width:10%;
+}
+
+#addMovie {
+   position:relative;
+   right:20px;
+}
+
+/*addMovie*/
+#projection{
+    width:350px;
+}
+
+     
+#bigTbl td{
+    padding:15px;
+}
+
+#internalTbl td{
+    padding:5px;
+}
+
+#bigTbl {
+    border-collapse: collapse;
+    margin-top:30px;
+}
+
+#imgshow{
+    width:200px;
+    height:200px;
+}
+
+/* end addMovie*/
+
+/*add user*/
+ #board_reg {
+    width: 400px;
+    height: 300px;
+    position: relative;
+    top:80px;
+    border:1px dashed  black;
+}
+
+/*end add user*/
+
+/*login*/
+ #board {
+    width: 400px;
+    height: 250px;
+    position: relative;
+    top:80px;
+    border:1px dashed  black;
+}
+ /* end login*/
+
+ /*successOrder*/
+  #board_order {
+    width: 500px;
+    height: 350px;
+    background-color: blanchedalmond;
+    position: relative;
+    top: 80px;
+    border: 1px dashed black;
+}
+
+/* end successOrder*/
+
+/*userOrders*/
+.ulSize
+{
+    width:650px;
+} 
+#divP
+{
+    width:200px;
+}
+/* end userOrders*/  
+
+.modal{
+    width:600px;
+}

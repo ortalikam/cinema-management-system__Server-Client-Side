@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="7b6f12c77709415aaece4a340150dd73" Name="Diagram1" ZoomLevel="100">
+        <EntityTypeShape EntityType="movieDBModel.CustomerBuyTicket" Width="4.125" PointX="4.625" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="movieDBModel.Movie" Width="1.5" PointX="11.375" PointY="0.625" IsExpanded="true" />
+<<<<<<< Updated upstream
+                <AssociationConnector Association="movieDBModel.FK__PlayTime__movie___164452B1" ManuallyRouted="false" />
+=======
+        <EntityTypeShape EntityType="movieDBModel.PlayTime" Width="1.5" PointX="9.25" PointY="0.625" IsExpanded="true" />
+        
+        
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; Stashed changes
+        <EntityTypeShape EntityType="movieDBModel.Customer" Width="1.5" PointX="2.5" PointY="0.75" />
+        <AssociationConnector Association="movieDBModel.FK__CustomerB__custo__24927208" />
+        <AssociationConnector Association="movieDBModel.FK__CustomerB__playT__48CFD27E" />
+        <EntityTypeShape EntityType="movieDBModel.sysdiagram" Width="1.5" PointX="7.62851576862322" PointY="7.89039631555341" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

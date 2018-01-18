@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="movieDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="nchar" MaxLength="9" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="10" Nullable="false" />
+    <Property Name="pass" Type="char" MaxLength="9" Nullable="false" />
+    <Property Name="isAdmin" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="CustomerBuyTickets">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="customer_id" Type="nchar" MaxLength="9" />
+    <Property Name="playTime_id" Type="int" />
+    <Property Name="amount" Type="int" />
+  </EntityType>
+  <EntityType Name="Movie">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="30" Nullable="false" />
+    <Property Name="publish_date" Type="date" />
+    <Property Name="langth" Type="smallint" Nullable="false" />
+    <Property Name="genre" Type="nvarchar" MaxLength="6" Nullable="false" />
+    <Property Name="img" Type="nvarchar" MaxLength="100" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PlayTime">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="movie_id" Type="int" />
+    <Property Name="play" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="total_sits" Type="int" Nullable="false" />
+    <Property Name="availble_sits" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <Association Name="FK__CustomerB__custo__59063A47">
+    <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+    <End Role="CustomerBuyTickets" Type="Self.CustomerBuyTickets" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="CustomerBuyTickets">
+        <PropertyRef Name="customer_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__CustomerB__playT__59FA5E80">
+    <End Role="PlayTime" Type="Self.PlayTime" Multiplicity="0..1" />
+    <End Role="CustomerBuyTickets" Type="Self.CustomerBuyTickets" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PlayTime">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="CustomerBuyTickets">
+        <PropertyRef Name="playTime_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PlayTime__movie___5441852A">
+    <End Role="Movie" Type="Self.Movie" Multiplicity="0..1" />
+    <End Role="PlayTime" Type="Self.PlayTime" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Movie">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="PlayTime">
+        <PropertyRef Name="movie_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="movieDBModelStoreContainer">
+    <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CustomerBuyTickets" EntityType="Self.CustomerBuyTickets" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Movie" EntityType="Self.Movie" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PlayTime" EntityType="Self.PlayTime" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK__CustomerB__custo__59063A47" Association="Self.FK__CustomerB__custo__59063A47">
+      <End Role="Customer" EntitySet="Customer" />
+      <End Role="CustomerBuyTickets" EntitySet="CustomerBuyTickets" />
+    </AssociationSet>
+    <AssociationSet Name="FK__CustomerB__playT__59FA5E80" Association="Self.FK__CustomerB__playT__59FA5E80">
+      <End Role="PlayTime" EntitySet="PlayTime" />
+      <End Role="CustomerBuyTickets" EntitySet="CustomerBuyTickets" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PlayTime__movie___5441852A" Association="Self.FK__PlayTime__movie___5441852A">
+      <End Role="Movie" EntitySet="Movie" />
+      <End Role="PlayTime" EntitySet="PlayTime" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

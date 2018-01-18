@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+    <title>סרטים מוצגים בקולנוע</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/style/StyleSheet.css">
+
+    <script>
+        var user = JSON.parse(localStorage.getItem("user"));
+        var itemInRow = 5;
+
+
+        $(document).ready(function () {
+
+            if (user != null) //There is a user
+            {
+                var $div = document.getElementById("hello");
+                var $spn = $("<span>").innerHTML = "שלום " + user.name;
+                $div.append($spn);
+
+                var $logOut = $("<button>").text("התנתק").attr("class", "w3-bar-item w3-button w3-padding-large  w3-text-white").click(function () { logout() });
+                var $view = $("<button>").text("צפייה בהזמנות שלי").attr("class", "w3-bar-item w3-button w3-padding-large  w3-text-white").click(function () { location.href = 'userOrders.html' });
+                $("#btn").append($logOut);
+                $("#btn").append($view);
+                if (user.isAdmin == 1) {
+                    var $add = $("<button>").text("הוסף סרט").attr("class", "w3-bar-item w3-button w3-padding-large w3-text-white");
+                    $add.click(function () { location.href = "addMovie.html" });
+                    $("#btn").append($add).attr("class", "adminDiv");
+                }
+
+            }
+            else //No user exists
+            {
+                var $con = $("<button>").text("התחבר").attr("class", "w3-bar-item w3-button w3-padding-large  w3-text-white").click(function () { location.href = 'login.html' });
+                var $reg = $("<button>").text("הרשמה").attr("class", "w3-bar-item w3-button w3-padding-large  w3-text-white").click(function () { location.href = 'addUser.html' });
+                $("#btn").append($con);
+                $("#btn").append($reg);
+            }
+
+            //Create the movie table
+            var $tbl = $("<table>").attr("class", "available");
+            var $tr = $("<tr>");
+            var counter = 0;
+
+            //bring plays from db
+            $.ajax({
+                dataType: "json",
+                url: "/api/movie",
+                contentType: "application/json; charset=utf-8",
+                type: "GET",
+                success: function (data) {
+                    for (i in data) {
+                        if (counter == itemInRow) {
+                            $tr = $("<tr>");
+                            counter = 0;
+                        }
+                        counter++;
+                        var $td = $("<td>").attr("class", "w3-panel w3-pale-green w3-bottombar w3-border-green w3-border ");
+                        var $div = $("<div>").attr({ "class": "internalDiv", "data-id": data[i].id });
+                        var $nameP = $("<span>").attr("data-name", data[i].name).text("שם הסרט:" + data[i].name);
+                        date = new Date(data[i].publish_date);
+                        var $publishDate = $("<span>").text("תאריך פרסום:" + date.toLocaleDateString());
+                        var $langth = $("<span>").text("אורך הסרט:" + data[i].langth + " דקות");
+                        var $genre = $("<span>").html("ז'אנר:" + data[i].genre);
+                        var $pic = $("<img>").attr({ "src": "/images/" + data[i].img, "movie-number-pic": i + 1 });
+                        var $btn = $("<button>").text("הצג הקרנות").attr("class", "w3-button w3-block w3-indigo  w3-round-xlarge w3-border w3-border-white").click(function () {
+                            localStorage.setItem("movie_id", JSON.stringify(this.parentElement.getAttribute("data-id")));
+                            localStorage.setItem("movie_name", JSON.stringify(this.parentElement.firstElementChild.getAttribute("data-name")));
+                            location.href = "playForMovie.html"
+                        });
+
+                        $div.append($nameP);
+                        $div.append($("<br>"));
+                        $div.append($publishDate);
+                        $div.append($("<br>"));
+                        $div.append($langth);
+                        $div.append($("<br>"));
+                        $div.append($genre);
+                        $div.append($("<br>"));
+                        $div.append($("<br>"));
+                        $div.append($pic);
+                        $div.append($("<br>"));
+                        $div.append($btn);
+                        $td.append($div);
+                        $tr.append($td);
+                        $tbl.append($tr);
+                        $("#availableTbl").append($tbl);
+
+                    }//for
+
+                }, //success_data
+                error: function () {
+                    console.log("תקלה בהצגת הסרטים");
+                } //error
+            });
+
+        }); //document
+
+        function logout() {
+            localStorage.removeItem("user");
+            location.href = 'showAll.html';
+        }
+
+
+    </script>
+
+</head>
+<body dir="rtl">
+
+    <div class="w3-bar w3-card-2">
+        <button onclick="location.href = 'showAll.html'" class="w3-bar-item w3-button w3-padding-large w3-text-white"><i class="material-icons">home</i></button>
+        <div id="btn"></div>
+        <div class="w3-text-white" id="hello"></div>
+    </div>
+
+    <table align="center">
+        <tr>
+            <td><h4 class="w3-panel w3-pale-green w3-bottombar w3-border-green w3-border">סרטים זמינים</h4></td>
+        </tr>
+
+        <tr class="gallery">
+            <td colspan="5">
+                <div class="w3-text-blue" id="availableTbl" align="center"  >
+                </div>
+            </td>
+    </table>
+
+</body>
+</html>

@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="movieDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="CustomerBuyTicket">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="customer_id" Type="String" MaxLength="9" FixedLength="true" Unicode="true" />
+    <Property Name="amount" Type="Int32" />
+    <NavigationProperty Name="Customer" Relationship="movieDBModel.FK__CustomerB__custo__24927208" FromRole="CustomerBuyTicket" ToRole="Customer" />
+    <Property Name="playTime_id" Type="Int32" />
+    <NavigationProperty Name="PlayTime" Relationship="movieDBModel.FK__CustomerB__playT__48CFD27E" FromRole="CustomerBuyTicket" ToRole="PlayTime" />
+  </EntityType>
+  <EntityType Name="Movie">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="publish_date" Type="DateTime" Precision="0" />
+    <Property Name="langth" Type="Int16" Nullable="false" />
+    <NavigationProperty Name="PlayTimes" Relationship="Self.FK__PlayTime__movie___164452B1" FromRole="Movie" ToRole="PlayTime" />
+    <Property Name="genre" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="true" />
+    <Property Name="img" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PlayTime">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="movie_id" Type="Int32" />
+    <Property Name="play" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="total_sits" Type="Int32" Nullable="false" />
+    <Property Name="availble_sits" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Movie" Relationship="Self.FK__PlayTime__movie___164452B1" FromRole="PlayTime" ToRole="Movie" />
+    <NavigationProperty Name="CustomerBuyTickets" Relationship="movieDBModel.FK__CustomerB__playT__48CFD27E" FromRole="PlayTime" ToRole="CustomerBuyTicket" />
+  </EntityType>
+  <Association Name="FK__PlayTime__movie___164452B1">
+    <End Role="Movie" Type="Self.Movie" Multiplicity="0..1" />
+    <End Role="PlayTime" Type="Self.PlayTime" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Movie">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="PlayTime">
+        <PropertyRef Name="movie_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="movieDBConnection" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="CustomerBuyTickets" EntityType="Self.CustomerBuyTicket" />
+    <EntitySet Name="Movies" EntityType="Self.Movie" />
+    <EntitySet Name="PlayTimes" EntityType="Self.PlayTime" />
+    <AssociationSet Name="FK__PlayTime__movie___164452B1" Association="Self.FK__PlayTime__movie___164452B1">
+      <End Role="Movie" EntitySet="Movies" />
+      <End Role="PlayTime" EntitySet="PlayTimes" />
+    </AssociationSet>
+    <EntitySet Name="Customers" EntityType="movieDBModel.Customer" />
+    <AssociationSet Name="FK__CustomerB__custo__24927208" Association="movieDBModel.FK__CustomerB__custo__24927208">
+      <End Role="Customer" EntitySet="Customers" />
+      <End Role="CustomerBuyTicket" EntitySet="CustomerBuyTickets" />
+    </AssociationSet>
+    <AssociationSet Name="FK__CustomerB__playT__48CFD27E" Association="movieDBModel.FK__CustomerB__playT__48CFD27E">
+      <End Role="PlayTime" EntitySet="PlayTimes" />
+      <End Role="CustomerBuyTicket" EntitySet="CustomerBuyTickets" />
+    </AssociationSet>
+    <EntitySet Name="sysdiagrams" EntityType="movieDBModel.sysdiagram" />
+  </EntityContainer>
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="String" Nullable="false" MaxLength="9" FixedLength="true" Unicode="true" />
+    <Property Name="name" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="pass" Type="String" Nullable="false" MaxLength="9" FixedLength="true" Unicode="false" />
+    <Property Name="isAdmin" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="CustomerBuyTickets" Relationship="movieDBModel.FK__CustomerB__custo__24927208" FromRole="Customer" ToRole="CustomerBuyTicket" />
+  </EntityType>
+  <Association Name="FK__CustomerB__custo__24927208">
+    <End Type="movieDBModel.Customer" Role="Customer" Multiplicity="0..1" />
+    <End Type="movieDBModel.CustomerBuyTicket" Role="CustomerBuyTicket" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="CustomerBuyTicket">
+        <PropertyRef Name="customer_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__CustomerB__playT__48CFD27E">
+    <End Type="movieDBModel.PlayTime" Role="PlayTime" Multiplicity="0..1" />
+    <End Type="movieDBModel.CustomerBuyTicket" Role="CustomerBuyTicket" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PlayTime">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="CustomerBuyTicket">
+        <PropertyRef Name="playTime_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+</Schema>

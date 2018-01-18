@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>הוספת לקוח חדש</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://www.w3schools.com/lib/w3.js"></script>
+    <link rel="stylesheet" type="text/css" href="/style/StyleSheet.css">
+
+    <script>
+        var machPasswords = false;
+
+        
+        $(document).ready(function () {
+            //init onsubmit 
+            $("#form").submit(function (event) {
+                event.preventDefault();
+                if (machPasswords == true)
+                    addUser();
+            });
+            // include Messege Module
+            $(function () {
+                $("#includedContent").load("messegeModule.html");
+            });
+
+            checkPassworsHandler();
+        });
+
+        function checkPassworsHandler() {
+            $('#password, #confirm_password').on('keyup', function () {
+                if ($('#password').val() == "" || $('#confirm_password').val() == "") {
+                    $('#message').html('');
+                    machPasswords = false;
+                }
+                else if ($('#password').val() == $('#confirm_password').val()) {
+                    $('#message').html('סיסמאות תואמות').removeClass("w3-red").addClass("w3-green");
+                    machPasswords = true;
+                }
+                else {
+                    $('#message').html('סיסמאות לא תואמות').removeClass("w3-green").addClass("w3-red");
+                    machPasswords = false;
+                }
+            });
+        }
+
+        function addUser() {
+            var fd = new FormData();
+
+            // create Customer object
+            var customer = {
+                id: document.getElementById("user_id").value,
+                name: document.getElementById("user_name").value,
+                pass: document.getElementById("password").value,
+                isAdmin: false
+            };
+
+            // append Customer
+            var customer_string = JSON.stringify(customer);
+            fd.append("customer", customer_string);
+
+            // send data to server
+            $.ajax({
+                url: "/api/customer",
+                contentType: "application/json; charset=utf-8",
+                type: "PUT",
+                data: fd,
+                contentType: false,
+                processData: false,
+                success: function (msg) {
+                        localStorage.setItem("user", JSON.stringify(customer));
+                        location.href = "showAll.html";
+                 },
+                error: function (xhr, textStatus, errorThrown) {
+                    var error = JSON.parse(xhr.responseText).Message;
+                    errorMsg(error, false);
+                }
+            });
+        }
+
+
+    </script>
+
+</head>
+<body dir="rtl" align="center" id="body-img">
+    <div class="w3-bar w3-card-2">
+        <button onclick="location.href='showAll.html'" , class="w3-bar-item w3-button w3-padding-large  w3-text-white"><i class="material-icons">home</i></button>
+    </div>
+    <div id="wrapper" style="padding:10px;" align="center">
+        <div id="board_reg" align="center" class="w3-panel w3-indigo w3-card-4">
+
+            <form id="form" autocomplete="off">
+                <h2 id="h1"></h2>
+                <h2>הוספת לקוח חדש:</h2>
+                <table>
+                    <tr>
+                        <td>תעודת זהות:</td>
+                        <td><input type="number" id="user_id" autofocus required  min="1"/></td>
+                    </tr>
+                    <tr>
+                        <td>שם: </td>
+                        <td> <input type="text" id="user_name" required /></td>
+                    </tr>
+                    <tr>
+                        <td>סיסמא:</td>
+                        <td> <input type="password" id="password" required /></td>
+                    </tr>
+                    <tr>
+                        <td>אימות סיסמא:</td>
+                        <td>
+                            <input type="password" id="confirm_password" required />
+                        </td>
+                    </tr>
+
+                </table>
+                <span id="message" class="w3-red"></span> <br /><br />
+                <input type="submit" value="הוסף לקוח" id="addbtn" class="w3-button w3-white w3-border  w3-round-large" />
+                <input type="button" value="חזרה לדף הראשי" onclick="location.href = 'showAll.html'" class="w3-button w3-white w3-border  w3-round-large" />
+            </form>
+
+        </div>
+    </div>
+
+    <!--add module for animated messeges-->
+    <div id="includedContent"></div>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+﻿<link href="../style/StyleSheet.css" rel="stylesheet" />
+
+ <!-- Messege Module -->
+<div id="ticketModal" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-card-4 modal">
+        <header class="w3-container w3-teal w3-center w3-padding-32">
+            <span id="donex" class="w3-button w3-teal w3-xlarge w3-display-topright">×</span>
+            <h3 id="messege" class="w3-wide"><i id="icon"></i></h3>
+        </header>
+        <div class="w3-container">
+            <button id="done" class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">
+                <i class="fa fa-remove"></i>
+                סגור
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    /* errorMsg & succMsg  are public function for using animates Messeges*/
+        function errorMsg(msg, reload) {
+            document.getElementById("icon").className = "";
+            document.getElementById("icon").className = "fa fa-exclamation-triangle w3-margin-right";
+            document.getElementById("icon").innerHTML = " " + msg;
+            document.getElementById('ticketModal').style.display = 'block';
+            imReload(reload);
+        }
+
+        function succMsg(msg, reload) {
+            document.getElementById("icon").className = "";
+            document.getElementById("icon").className = "fa fa-check-square-o w3-margin-right";
+            document.getElementById("icon").innerHTML = " " + msg;
+            document.getElementById('ticketModal').style.display = 'block';
+            imReload(reload);
+        }
+
+        function imReload(reload) {
+            document.getElementById("done").onclick = '';
+            if (reload == true) {
+                document.getElementById("donex").onclick =
+                document.getElementById("done").onclick =
+                    function () {
+                        document.getElementById('ticketModal').style.display = 'none';
+                        location.reload();
+                    };
+            }
+            else
+            document.getElementById("donex").onclick =
+            document.getElementById("done").onclick =
+                function () {
+                    document.getElementById('ticketModal').style.display = 'none';
+                };
+        }
+</script>

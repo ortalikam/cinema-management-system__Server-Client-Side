@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>כניסה למערכת</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" type="text/css" href="/style/StyleSheet.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+   
+
+    <script>
+
+        $(document).ready(function () {
+            //init onSubmit
+            $("form").submit(function (event) {
+                event.preventDefault();
+                login();
+            });
+
+            //include Messege Module
+            $(function () {
+                $("#includedContent").load("messegeModule.html");
+            });
+        });
+
+        function login() {
+            var idL = document.getElementById("idL").value;
+            var passL = document.getElementById("pass").value;
+            document.getElementById("error").innerHTML = "";
+
+            validId_continue(idL, passL);
+        }
+
+
+        function validId_continue(idL, passL) {
+
+            $.ajax({
+                dataType: "json",
+                url: "/api/Costumer/isValidCustomer/" + idL + "/" + passL,
+                contentType: "application/json; charset=utf-8",
+                type: "GET",
+                success: function (user)
+                {
+                    if (user != null) {
+                        localStorage.setItem("user", JSON.stringify(user));
+                        if (window.history.back() == undefined)
+                            location.href = "showAll.html";
+                    }
+                    else
+                        errorMsg("ת.ז או הסיסמא לא נכונים", false);
+                },
+                error: function ()
+                {
+                    console.log("connection ERROR - validId()");
+                }
+            });
+        }
+
+
+
+    </script>
+</head>
+<body dir="rtl" align="center">
+
+    <!--Top menu-->
+    <div class="w3-bar w3-card-2 ">
+        <button onclick="location.href='showAll.html'" , class="w3-bar-item w3-button w3-padding-large  w3-text-white"><i class="material-icons">home</i></button>
+    </div>
+
+    <div id="wrapper" style="padding:10px;" align="center">
+        <div align="center" id="board" class="w3-panel w3-indigo w3-card-4">
+            <h2>כניסה למערכת</h2>
+            <form id="form">
+                <table>
+                    <tr>
+                        <td> ת.ז:</td>
+                        <td><input type="text" id="idL" autofocus required />  </td>
+                    </tr>
+                    <tr>
+                        <td> סיסמא:</td>
+                        <td><input type="password" id="pass" required />  </td>
+                    </tr>
+                </table>
+                <span class="w3-white" id="error"></span> <br /><br />
+                <input type="submit" value="היכנס" class="w3-button w3-white w3-border  w3-round-large" />
+                <input type="button" value="משתמש חדש" class="w3-button w3-white w3-border  w3-round-large" onclick="location.href = 'addUser.html'" />
+            </form>
+        </div>
+    </div>
+
+    <!--add module for animated messeges-->
+    <div id="includedContent"></div>
+
+</body>
+</html>
+

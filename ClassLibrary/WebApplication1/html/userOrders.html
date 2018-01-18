@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>ההזמנות שלי</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/style/StyleSheet.css">
+
+    <script>
+        var user = JSON.parse(localStorage.getItem("user"));
+
+        $(document).ready(function () {
+            // include Messeges Module
+            $(function () {
+                $("#includedContent").load("messegeModule.html");
+            });
+
+            if (user != null) { //There is a user
+                var $div = document.getElementById("hello");
+                var $spn = $("<span>").innerHTML = "שלום " + user.name;
+                $div.append($spn);
+
+                var $logOut = $("<button>").text("התנתק").attr("class", "w3-bar-item w3-button w3-padding-large  w3-text-white").click(function () { logout() });
+                $("#btn").append($logOut);
+
+                if (user.isAdmin == 1) {
+                    var $add = $("<button>").text("הוסף סרט").attr("class", "w3-bar-item w3-button w3-padding-large w3-text-white");
+                    $add.click(function () { location.href = "addMovie.html" });
+                    $("#btn").append($add).attr("class", "adminDiv");
+                }
+                ///View invitations
+                var $ul = $("<ul>").attr({ "class": "w3-ul ulSize" });
+                $.ajax({
+                    dataType: "json",
+                    url: "/api/CustomerBuyTickets/" + user.id,
+                    contentType: "application/json; charset=utf-8",
+                    type: "GET",
+                    success: function (data) {
+                        if (data.length == 0) {
+                            $h4 = $("<h4>").text("לא נמצאו הזמנות עבור לקוח");
+                            $("#noOrders").append("<br>");
+                            $("#noOrders").append($h4);
+                        }
+                        else { //data.length != 0
+                            var $tdH = $("<h4>").text("  ההזמנות שלי: ").attr({ "class": "w3-tag w3-large  w3-round w3-green w3-border w3-border-white size" });
+                            $("#divOrders").append($tdH);
+                        }
+
+                        for (i in data) {
+                            var $li = $("<li>").attr({ "class": "w3-bar w3-gray  w3-round-xlarge ", "data-id": data[i].id });
+                            var $cnl = $("<span>").text("x").attr("class", "w3-bar-item w3-button w3-gray w3-xlarge w3-left").click(function () { deleteOrder(this) });
+                            var $pic = $("<img>").attr({ "src": "/images/" + data[i].PlayTime.Movie.img, "movie-number-pic": i + 1, "class": "w3-bar-item w3-right" });
+                            var $div = $("<div>").attr({ "class": "w3-bar-item w3-right internalDiv" })
+
+                            var $nameP = $("<span>").attr("data-name", data[i].PlayTime.Movie.name).text("שם הסרט:" + data[i].PlayTime.Movie.name);
+                            var date = new Date(data[i].PlayTime.play);
+                            var $time = $("<span>").html("זמן הקרנה:" + date.toLocaleString('en-GB'));
+                            var $orders = $("<span>").html("מספר כרטיסים:" + data[i].amount);
+
+                            var $divP = $("<div>").attr({ "class": " w3-right", id: "divP" });
+                            $divP.append($pic);
+
+                            $div.append($nameP);
+                            $div.append($("<br>"));
+                            $div.append($time);
+                            $div.append($("<br>"));
+                            $div.append($orders);
+                            $div.append($("<br>"));
+
+                            $li.append($cnl);
+                            $li.append($divP);
+                            $li.append($div);
+                            $ul.append($li);
+
+                        }//for
+                        $("#divOrders").append($ul);
+                    },
+                    error: function () {
+                        console.log("connection ERROR - Available movies");
+                    }
+                });
+
+            }
+            else { //user==null
+                var $con = $("<button>").text("התחבר").attr("class", "w3-bar-item w3-button w3-padding-large  w3-text-white").click(function () { location.href = 'login.html' });
+                var $reg = $("<button>").text("הרשמה").attr("class", "w3-bar-item w3-button w3-padding-large  w3-text-white").click(function () { location.href = 'addUser.html' });
+                $("#btn").append($con);
+                $("#btn").append($reg);
+                var $div = document.getElementById("hello");
+                var $spn = $("<span>").innerHTML = "אין נתונים";
+                $div.append($spn);
+            }
+        });
+
+        function deleteOrder(t) {
+            $.ajax({
+                dataType: "json",
+                url: "/api/CustomerBuyTickets/" + t.parentElement.getAttribute("data-id"),
+                contentType: "application/json; charset=utf-8",
+                type: "DELETE",
+                success: function (data) {
+                    succMsg("ההזמנה המבוקשת נמחקה", true);
+                },
+                error: function () {
+                    errorMsg("בעיה במחיקה", true);
+                }
+            });
+        }
+
+        function logout() {
+            localStorage.clear();
+            location.href = 'showAll.html';
+        }
+
+    </script>
+
+</head>
+<body dir="rtl">
+    <!--Top menu-->
+    <div class="w3-bar w3-card-2">
+        <button onclick="location.href = 'showAll.html'" class="w3-bar-item w3-button w3-padding-large w3-text-white"><i class="material-icons">home</i></button>
+        <div id="btn"></div>
+        <div class="w3-text-white" id="hello"></div>
+    </div>
+
+
+    <div id="noOrders" class="w3-text-white" align="center"></div>
+
+    <div class="w3-container" id="divOrders" align="center">
+    </div>
+
+    <!--add module for animated messeges-->
+    <div id="includedContent"></div>
+
+</body>
+</html>

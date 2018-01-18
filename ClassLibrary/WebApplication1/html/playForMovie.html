@@ -1,0 +1,187 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+    <title>הקרנות זמינות עבור סרט</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="../Scripts/DaysHeader.js"></script>
+    <link rel="stylesheet" type="text/css" href="/style/StyleSheet.css">
+
+    <script>
+
+        var user = JSON.parse(localStorage.getItem("user"));
+        var m_id = JSON.parse(localStorage.getItem("movie_id"));
+        var numOfAvailableSits;
+        var itemInRow = 5;
+        var ifUser = 1;
+
+        $(document).ready(function () {
+            if (user != null) { //There is a user
+                var $div = document.getElementById("hello");
+                var $spn = $("<span>").innerHTML = "שלום " + user.name;
+                $div.append($spn);
+
+                var $logOut = $("<button>").text("התנתק").attr("class", "w3-bar-item w3-button w3-padding-large  w3-text-white").click(function () { logout() });
+                var $view = $("<button>").text("צפייה בהזמנות שלי").attr("class", "w3-bar-item w3-button w3-padding-large  w3-text-white").click(function () { location.href = 'userOrders.html' });
+                $("#btn").append($logOut);
+                $("#btn").append($view);
+                if (user.isAdmin == 1) {
+                    var $add = $("<button>").text("הוסף סרט").attr("class", "w3-bar-item w3-button w3-padding-large w3-text-white");
+                    $add.click(function () { location.href = "addMovie.html" });
+                    $("#btn").append($add).attr("class", "adminDiv");
+                }
+
+            }
+            else { //No user exists
+                ifUser = 0;
+                var $div = document.getElementById("hello");
+                var $spn = $("<span>").innerHTML = "שים לב- יש להתחבר כדי להזמין סרט";
+                $div.append($spn);
+                var $con = $("<button>").text("התחבר").attr("class", "w3-bar-item w3-button w3-padding-large  w3-text-white").click(function () { location.href = 'login.html' });
+                var $reg = $("<button>").text("הרשמה").attr("class", "w3-bar-item w3-button w3-padding-large  w3-text-white").click(function () { location.href = 'addUser.html' });
+                $("#btn").append($con);
+                $("#btn").append($reg);
+
+
+            }
+            //Create the play table
+            var $tbl = $("<table>").attr("class", "available");
+            var $tr = $("<tr>");
+            var counter = 0;
+
+            //GET plays from db
+            $.ajax({
+                dataType: "json",
+                url: "/api/PlayTime/" + m_id,
+                contentType: "application/json; charset=utf-8",
+                type: "GET",
+                success: function (data) {
+                    var $h4 = $("<h4>").text("  הקרנות זמינות עבור הסרט: " + JSON.parse(localStorage.getItem("movie_name"))).attr({ "class": "w3-tag w3-large  w3-round w3-green w3-border w3-border-white size" });
+                    $("#tdHeader").append($("<br>"));
+                    $("#tdHeader").append($h4);
+                    for (i in data) {
+                        if (counter == itemInRow) {
+                            $tr = $("<tr>");
+                            counter = 0;
+                        }
+                        counter++;
+                        numOfAvailableSits = data[i].availble_sits;
+                        var $td = $("<td>").attr("class", "w3-panel w3-pale-green w3-bottombar w3-border-green w3-border ");
+                        var $div = $("<div>").attr({ "class": "w3-bar-item w3-right internalDiv", "data-id": data[i].id })
+                        date = new Date(data[i].play);
+                        var $date = $("<span>").text("תאריך הקרנה:" + date.toLocaleDateString()).attr({ "class": "", "data-play": data[i].play });
+                        var $day = $("<span>").text("יום הקרנה:" + days[date.getDay()]);
+                        var $hour = $("<span>").text("שעת הקרנה:" + date.toLocaleTimeString('en-GB'));
+                        var $avail = $("<span>").text("מס' כרטיסים פנויים:" + numOfAvailableSits);
+
+                        if (numOfAvailableSits > 0) {
+                            var $selectP = $("<select>");
+                            j = 1;
+                            while (j <= numOfAvailableSits) {
+                                $selectP.append('<option value=' + j + '>' + j + '</option>');
+                                j++;
+                            }
+                            var $btn = $("<button>").text("הזמן כרטיסים").attr("class", "w3-btn w3-ripple w3-blue").click(function () { orderMovie(this) });
+                            if (ifUser == 0) {
+                                $btn.attr("disabled", "true");
+                            }
+                        }
+                        else {
+                            var $selectP = $("<span>").text("");
+                            var $btn = $("<button>").text("הכרטיסים אזלו").attr({ "disabled": "true", "class": "w3-btn w3-ripple w3-blue" });
+                        }
+
+
+                        $div.append($date);
+                        $div.append($("<br>"));
+                        $div.append($day);
+                        $div.append($("<br>"));
+                        $div.append($hour);
+                        $div.append($("<br>"));
+                        $div.append($avail);
+                        $div.append($("<br>"));
+                        $div.append($selectP);
+                        $div.append($("<br>"));
+                        $div.append($("<br>"));
+                        $div.append($btn);
+
+
+                        $td.append($div);
+                        $tr.append($td);
+                        $tbl.append($tr);
+                        $("#availableTbl").append($tbl);
+                    }
+                }, //success_data
+                error: function () {
+                    console.log("connection ERROR - Available movies");
+                }
+            }); //ajax
+        }); //(document).ready
+
+        function orderMovie(t) {
+            //create CustomerBuyTickets object
+            var x = {
+                customer_id: user.id,
+                movie_id: JSON.parse(localStorage.getItem("movie_id")),
+                amount: t.previousElementSibling.previousElementSibling.previousElementSibling.selectedIndex + 1,
+                playTime_id: t.parentElement.getAttribute("data-id"),
+            }
+
+            $.ajax({
+                dataType: "json",
+                url: "/api/CustomerBuyTickets",
+                contentType: "application/json; charset=utf-8",
+                type: "PUT",
+                data: JSON.stringify(x),
+                success: function (data) {
+                    var nData =
+                        {
+                            id: data.id,
+                            customer_id: data.customer_id,
+                            movie_id: data.PlayTime.movie_id,
+                            amount: data.amount,
+                            movie_name: localStorage.getItem("movie_name"),
+                            play: t.parentElement.firstElementChild.getAttribute("data-play"),
+                        }
+                    localStorage.setItem("successOrder", JSON.stringify(nData));
+                    location.href = "successOrder.html"
+                },
+                error: function () {
+                    errorMsg("בעיה בהזמנת סרט", false);
+                }
+            });
+        }
+
+        function logout() {
+            localStorage.removeItem("user");
+            location.href = 'showAll.html';
+        }
+
+
+    </script>
+
+</head>
+<body dir="rtl">
+    <!--Top menu-->
+    <div class="w3-bar w3-card-2">
+        <button onclick="location.href = 'showAll.html'" class="w3-bar-item w3-button w3-padding-large  w3-text-white"><i class="material-icons">home</i></button>
+        <div id="btn"></div>
+        <div class="w3-text-white" id="hello"></div>
+    </div>
+
+    <table id="bigTbl" align="center">
+        <tr>
+            <td colspan="5" ><div align="center" id="tdHeader"></div></td>
+        </tr>
+
+        <tr class="gallery">
+            <td colspan="5">
+                <div class="w3-text-blue" id="availableTbl" align="center"></div>
+            </td>
+    </table>
+
+</body>
+</html>

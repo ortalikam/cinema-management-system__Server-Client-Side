@@ -1,0 +1,10 @@
+C:\Users\Yuval\Desktop\project\server\ClassLibrary\ClassLibrary\bin\Debug\ClassLibrary.dll.config
+C:\Users\Yuval\Desktop\project\server\ClassLibrary\ClassLibrary\bin\Debug\ClassLibrary.dll
+C:\Users\Yuval\Desktop\project\server\ClassLibrary\ClassLibrary\bin\Debug\ClassLibrary.pdb
+C:\Users\Yuval\Desktop\project\server\ClassLibrary\ClassLibrary\bin\Debug\EntityFramework.dll
+C:\Users\Yuval\Desktop\project\server\ClassLibrary\ClassLibrary\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Yuval\Desktop\project\server\ClassLibrary\ClassLibrary\bin\Debug\EntityFramework.xml
+C:\Users\Yuval\Desktop\project\server\ClassLibrary\ClassLibrary\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Yuval\Desktop\project\server\ClassLibrary\ClassLibrary\obj\Debug\ClassLibrary.csprojResolveAssemblyReference.cache
+C:\Users\Yuval\Desktop\project\server\ClassLibrary\ClassLibrary\obj\Debug\ClassLibrary.dll
+C:\Users\Yuval\Desktop\project\server\ClassLibrary\ClassLibrary\obj\Debug\ClassLibrary.pdb

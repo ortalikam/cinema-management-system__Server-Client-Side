@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>הזמנה התקבלה בהצלחה!</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/style/StyleSheet.css">
+
+    <script>
+        var user = JSON.parse(localStorage.getItem("user"));
+        var successOrder = JSON.parse(localStorage.getItem("successOrder"));
+        $(document).ready(function () {
+            if (user != null) {//There is a user
+                ifUser = 1;
+                var $logOut = $("<button>").text("התנתק").attr("class", "w3-bar-item w3-button w3-padding-large  w3-text-white").click(function () { logout() });
+                var $view = $("<button>").text("צפייה בהזמנות שלי").attr("class", "w3-bar-item w3-button w3-padding-large  w3-text-white").click(function () { location.href = 'userOrders.html' });
+                $("#btn").append($logOut);
+                $("#btn").append($view);
+                if (user.isAdmin == 1) {
+                    var $add = $("<button>").text("הוסף סרט").attr("class", "w3-bar-item w3-button w3-padding-large w3-text-white");
+                    $add.click(function () { location.href = "addMovie.html" });
+                    $("#btn").append($add).attr("class", "adminDiv");
+                }
+            }
+            else {//No user exists
+                ifUser = 0;
+                var $div = document.getElementById("hello");
+                var $spn = $("<span>").innerHTML = "נתונים אינם זמינים";
+                $div.append($spn);
+                var $con = $("<button>").text("התחבר").attr("class", "w3-bar-item w3-button w3-padding-large  w3-text-white").click(function () { location.href = 'login.html' });
+                var $reg = $("<button>").text("הרשמה").attr("class", "w3-bar-item w3-button w3-padding-large  w3-text-white").click(function () { location.href = 'addUser.html' });
+                $("#btn").append($con);
+                $("#btn").append($reg);
+            }
+
+            document.getElementById("h1").innerHTML = user.name + ", תודה שהזמנת כרטיס לסרט";
+            document.getElementById("orderNumber").innerHTML = successOrder.id;
+            document.getElementById("clientNumber").innerHTML = user.id;
+            document.getElementById("movieName").innerHTML = successOrder.movie_name;
+            d = new Date(successOrder.play);
+            document.getElementById("play").innerHTML = d.toLocaleString('en-GB');
+            document.getElementById("amountSeats").innerHTML = successOrder.amount;
+        });
+
+        function logout() {
+            localStorage.clear();
+            location.href = 'showAll.html';
+        }
+
+    </script>
+
+</head>
+<body dir="rtl">
+
+    <div class="w3-bar w3-card-2">
+        <button onclick="location.href='showAll.html' " class="w3-bar-item w3-button w3-padding-large  w3-text-white"><i class="material-icons">home</i></button>
+        <div id="btn"></div>
+        <div class="w3-text-white" id="hello"></div>
+    </div>
+   
+    <div id="wrapper" align="center">
+        <div id="board_order" align="center">
+
+            <h2 id="h1"></h2>
+            <h2>פרטי ההזמנה:</h2>
+            <table>
+                <tr>
+                    <td>מספר הזמנה:</td>
+                    <td> <span id="orderNumber"></span></td>
+                </tr>
+                <tr>
+                    <td>מספר לקוח:</td>
+                    <td> <span id="clientNumber"></span></td>
+                </tr>
+                <tr>
+                    <td>שם הסרט:</td>
+                    <td> <span id="movieName"></span></td>
+                </tr>
+                <tr>
+                    <td>זמן הקרנה:</td>
+                    <td> <span id="play"></span></td>
+                </tr>
+                <tr>
+                    <td>כמות מושבים:</td>
+                    <td> <span id="amountSeats"></span></td>
+                </tr>
+            </table>
+            <br />
+            <input type="button" value="הזמנה נוספת" onclick="location.href = 'showAll.html'" class="w3-button w3-white w3-border  w3-round-large" />
+
+        </div>
+
+     
+    </div>
+
+</body>
+</html>
